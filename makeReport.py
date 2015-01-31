@@ -6,6 +6,8 @@ import os
 fileMustStartWith = 'disc'
 dataDirectoryName = 'sample_data'
 reportFileName = 'report.txt'
+# validate if needed
+dataLineValidator = '.*'
 
 def getFilePathsByLocation(directoryName):
     validFilesByLocation = {}
@@ -23,26 +25,33 @@ def getFilePathsByLocation(directoryName):
 
     return validFilesByLocation
 
+def formatDataLine (line):
+    # todo update to correct formatting
+    if not re.match(dataLineValidator, line):
+        return ''
+
+    formatedLine = re.sub('\s+', ',', line)
+    return formatedLine + '\n'
+
 def makeReport (filePathsByLocation, reportFileName):
     # clear the file
-    reportFile = open(reportFileName, 'w')
+    reportFile = open(reportFileName, 'w').close()
 
+    # todo: break into smaller functions
     for location in filePathsByLocation:
         filePaths = filePathsByLocation[location]
 
         for filePath in filePaths:
             # open the file to append new lines
-            reportFile = open(reportFileName, 'a')
-        
-            # todo: do something with this
             readFile = open(filePath, 'r')
+            for line in readFile:
+                reportFile = open(reportFileName, 'a')
+                with reportFile as out:
+                    formattedLine = formatDataLine(line)
+                    out.writelines(formattedLine)
+                reportFile.close()
+
             readFile.close()
-
-            with reportFile as out:
-                out.writelines('test')
-                out.writelines('\n')
-
-    reportFile.close()
 
 filePathsByLocation = getFilePathsByLocation(dataDirectoryName)
 makeReport(filePathsByLocation, reportFileName)
