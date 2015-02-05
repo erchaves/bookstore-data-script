@@ -4,7 +4,7 @@ import os
 
 # variable settings
 shouldFilterZeroValues = True
-directoryPath = 'process_home'
+datdDirectoryPath = 'process_home'
 reportFilePath = 'report.csv'
 reportFields = ['date','locationName','discountType','quantity','amount']
 reportHeaders = ['Date,Location,Discount Type,Quantity,Amount']
@@ -92,5 +92,5 @@ def makeCsvReport (fileMetaDataArr):
         readFile.close()
 
 if __name__ == "__main__":
-    fileMetaDataArr = getfileMetaDataArr(directoryPath)
+    fileMetaDataArr = getfileMetaDataArr(datdDirectoryPath)
     makeCsvReport(fileMetaDataArr)
