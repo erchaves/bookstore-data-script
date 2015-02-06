@@ -59,7 +59,7 @@ def formatDataRow (line, fileMetaData):
     dataDict = dict(fileRowData.items() + fileMetaData.items())
 
     if shouldFilterZeroValues:
-        hasZeros = not (float(dataDict['quantity']) and float(dataDict['amount']))
+        hasZeros = not (dataDict['quantity'] and float(dataDict['amount']))
         if hasZeros:
             return ''
 
