@@ -15,10 +15,20 @@ fileNameValidator = '^disc.*'+dateRegex+'$'
 # add validation regex for data rows if desired.
 dataRowValidator = None
 # The specfic character ranges occupied by each field in a data row
-dataFieldCharRanges = {
-    'discountType': [0,20],
-    'quantity': [21,27],
-    'amount': [28,37],
+dataFieldParseSettings = {
+    'discountType' : {
+        'charRange': [0,20],
+        'fltr': None,
+    },
+    'quantity' : {
+        'charRange': [21,27],
+        'fltr': lambda x: float(x),
+    },
+    'amount' : {
+        'charRange': [28,37],
+        # convert pennies into dollars
+        'fltr': lambda x: "{:.2f}".format(float(x) / 100),
+    },
 }
 
 def getfileMetaDataArr(directoryName):
@@ -61,10 +71,16 @@ def formatDataRow (line, fileMetaData):
 # Example of a row 'A Field..........10% 000014  000003421'
 def parseDataRow (line):
     dataFields = {}
-    for key in dataFieldCharRanges:
-        range = dataFieldCharRanges[key]
-        field = line[range[0]:range[1]]
-        dataFields[key] = field
+    for field in dataFieldParseSettings:
+        settings = dataFieldParseSettings[field]
+        charRange = settings['charRange']
+        fltr = settings['fltr']
+        data = line[charRange[0]:charRange[1]]
+
+        if (fltr):
+            data = fltr(data)
+
+        dataFields[field] = data
     return dataFields
 
 def writeLinesToReport (lines):
